@@ -1,0 +1,39 @@
+Esto es un ejemplo del final como deberia quedar
+
+
+package org.iesra.procesaalumnos
+
+import java.io.File
+import java.nio.file.Path
+
+class StudentProcessing {
+    /**
+     * Ejecuta el flujo principal del programa
+     *
+     * @param options opciones recibidades desde linea de codigo
+     *
+     *
+     */
+
+    fun run(option: CliOptions) {
+        println("Grupo recibido:${options.group}")
+        println("Directorio de trabajo:${option.path}")
+    }
+
+    printSuggestedDesign()
+}
+    private fun printSuggestedDesign() {
+        println()
+        println("Sugerencia de dineño orientado a objetos")
+        println("- StudentFileRepository: localiza lee y mueve ficheros")
+        println("- StudentParser: convierte un fichero en un objeto...")
+        println("-InstitutuionaEmailGenerator:Genera el correo del instituto")
+        println("-GroupAssignaer:decide a que grupo va cada alumno")
+        println("-OutputWriter:escribe los ficheros csv y txt")
+        println("-SummaryPrinter:Muestra el resumen final")
+    }
+
+private fun findInputFiles(directory: Path):List<StudentFile> = emptyList() {}
+
+private fun registerIssue(fileName: String, message: String): FileIssue =
+    FileIssue(fileName, message)

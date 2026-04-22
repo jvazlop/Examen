@@ -1,0 +1,116 @@
+El programa debe leer todos los ficheros del directorio indicado y realizar este procesamiento
+
+1.Generar un nuevo correo del instituto con el formato
+'primera letra del nombre + segundo apellido + segunda letra del segundo apellido + @iesrafaelalberti.es'
+
+2.Guardar los datos de correo en un fichero CSV por grupo del ciclo('DAW1','DAW2',...) con nombre '<grupo>correos.csv',
+ejemplo para daw1: 'DAW1-correos.csv
+
+3.Asignar a cada alumno el grupo de clase('A','B','C',...) solicitado siempre que sea valido y no este completo
+
+4.Si un alumno no indica grupo de clase o el grupo esta lleno,asignarlo aleatoriamente a otro grupo disponible o
+generar uno nuevo siguiendo las letras del abecedario.
+
+5 Limitar cada grupo de clase a un maximo de 5 integrantes
+6.Generar un fichero '<grupo>-grupos.txt' con la composicion final de los grupos, por ejemplo 'DAW1-grupos.txt
+
+7 Mover cada fichero procesado a una carpeta llamada 'procesados'.
+
+8 mostrar por salida estandar un resumen del procesamiento
+
+###ARCHIVO: DAW1-correos.csv'
+
+'''text
+nombre|apellidos|email|email2
+Eduardo|Fernandez Oliver| eferoli398@g.educaand.es|eoliverr@iesrafaelalberti.es
+marta|Lopez Perez|mlopez123@g.educaand.es|mperezr@iesrafaelalberti.es
+'''
+
+###Fichero de grupos
+
+ARCHIVO: 'DAW1-grupos.txt'
+
+'''text
+[Grupo-A]
+    -Eduardo Fernandez oliver
+    -lucia moreno Gil
+
+[Grupo-A]
+    -Marta Lopez Perez
+'''
+
+
+FLOWCHART
+    A["inicio del programa"] -->B["Leer argumentos <br/> grupo y ruta"]
+    B -->Localizar ficheros .txt"]
+    C -->[Quedan fichero <br/por preocesaar?"]
+    D --"SI" -->[leer y validar fichero"]
+    E --> F["Formato correcto?"]
+    F -- "no" --> ["Registrar incidencia"]
+    G --> H["Mover fichero a <br/> procedados"]
+    H -- "SI" -->["Generar correo del instituto"]
+    F --"SI" -->I["generar correo del instituto"]
+    i --> J ["Grupo solicido valido <br/> y con plazas?"]
+    J -- "si" -->K["Asignar el grupo solicitado"]
+    J -- "no" -->L["Buscar un grupo con plazas <br/>o crear nuevo grupo"]
+    K --> M["Añadir a correos y grupos
+    L --> M
+    M --> H
+    H --> D
+    D -- "NO" --> N["Generar fichero csv de correos"]
+    N --> O["Generar fichero txt de grupos"]
+    O --> P["mostrar resumen por consola"]
+    P --> Q["FIN]
+
+###DESCRIPCION DEL COMANDO
+
+El programa se llamara procesa-alumnos y se ejecuta desde line de comandos y acepta estas opciones
+
+"--grupo <NOMBRE>": obligatorio.Indica el identificador general del curo o clase por ejemplo "DAW1"
+"--path <RUTA>: OPCIONAL indica la carpeta donde estan los ficheros de entrada. Si no se informa se usa el directorio del trabajo actual
+
+procesa-alumnos --grupo <nombre>[--parth <ruta>]
+
+###EJEMPLOS DE USO DEL COMANDO
+
+Procesar los ficheros del directorio actual:
+"procesa-alumnos --grupo DAW1"
+
+Procesar los ficheros de una carpeta concreta
+"procesa-alumnos --grupo DAW1 --path ./datos/alumnos
+
+###EJEMPLO DE FICHERO DE ENTRADA
+Archivo eferoli398.txt
+Nombre:Eduardo
+Apellido:Fernandez oliver
+email;eferoli398@g.educaand.es
+Grupo = A
+
+###RESUMEN ESPERADO POR SALIDA ESTANDAR
+Al finalizar el programa debe mostrar un resumen similar a este:
+
+'''text
+
+Fichero procesados: 20
+Ficheros con errores: 1
+Corros creados corretamente: 19
+
+Resumen de grupos:
+- Grupo-A: 5 alumnos
+- Grupo-B: 5 alumnos
+- Grupo-C: 5 alumnos
+- Grupo-D: 4 alumnos
+
+Incidencias:
+- archivo jruiz777.txt: grupo no informado, asignado aleatoriamente a C
+'''
+
+###INFORMACION IMPORTANTE
+
+-Cada fichero debe contener los cuatro datos requeridos
+-Si un fichero tiene errores de formato debe informatse en el resumen final
+-Los grupos tienen un maximo de 5 alumnos
+-La asignacion aleatoria solo debe hacerse primero entre grupos con plazas disponibles, luego seguir el orden del abecedario empezando por A,B,C....
+-Tras procesar cada fichero, este debe moversa al directorio procesados
+-El directorio procesados debe crearse automaticamente si no existe
+-El separador del csv sera | .
