@@ -1,28 +1,30 @@
 package org.iesra.procesaalumnos.service
 
 import org.iesra.procesaalumnos.model.Student
-import org.iesra.procesaalumnos.model.FileIssue
+import org.iesra.procesaalumnos.interfaces.IGroupAssigner
 
-class GroupAssigner {
+class GroupAssigner : IGroupAssigner {
     // Almacena los grupos: "A" -> lista de alumnos
     private val groups = mutableMapOf<String, MutableList<Student>>()
     private val maxCapacity = 5
-    val issues = mutableListOf<String>()
 
-    fun assignGroup(student: Student) {
-        val requested = student.grupoSolicitado?.uppercase()
+    // Lista de incidencias para el resumen final
+    override val issues = mutableListOf<String>()
+
+    override fun assignGroup(student: Student) {
+        val requested = student.grupoSolicitado?.uppercase()?.trim()
 
         // 1. Intentar asignar el grupo solicitado si existe y tiene hueco
         if (!requested.isNullOrBlank() && canFitIn(requested)) {
             addToGroup(requested, student)
             student.grupoAsignado = requested
         } else {
-            // 2. Si no es válido o está lleno, buscar uno disponible o crear uno
+            // 2. Si no es válido o está lleno, buscar uno disponible o crear uno nuevo
             val assigned = findAvailableOrCreate()
 
-            // Registrar incidencia si fue por falta de hueco o grupo no informado
+            // Registrar por qué se cambió de grupo (incidencia)
             val reason = if (requested.isNullOrBlank()) "no informado" else "grupo $requested lleno"
-            issues.add("archivo ${student.nombre}.txt: grupo $reason, asignado a $assigned")
+            issues.add("archivo ${student.nombre}.txt: $reason, asignado a $assigned")
 
             addToGroup(assigned, student)
             student.grupoAsignado = assigned
@@ -38,13 +40,13 @@ class GroupAssigner {
     }
 
     private fun findAvailableOrCreate(): String {
-        // Buscar en el abecedario A, B, C...
+        // Busca desde la A hasta la Z un hueco libre
         for (char in 'A'..'Z') {
             val letter = char.toString()
             if (canFitIn(letter)) return letter
         }
-        return "Z" // Fallback extremo
+        return "Z" // Fallback
     }
 
-    fun getAllGroups(): Map<String, List<Student>> = groups
+    override fun getAllGroups(): Map<String, List<Student>> = groups
 }

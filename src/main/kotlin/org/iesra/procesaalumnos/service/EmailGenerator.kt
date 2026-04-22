@@ -1,23 +1,41 @@
 package org.iesra.procesaalumnos.service
 
 import org.iesra.procesaalumnos.model.Student
+import org.iesra.procesaalumnos.interfaces.IEmailGenerator
 
-class EmailGenerator {
+/**
+ * Implementación del generador de correos según las reglas del Rafael Alberti.
+ */
+class EmailGenerator : IEmailGenerator {
 
-    fun generate(student: Student): String {
+    /**
+     * Genera un correo con el formato:
+     * primera letra nombre + segundo apellido + segunda letra segundo apellido + @iesrafaelalberti.es
+     */
+    override fun generate(student: Student): String {
+        // Separamos los apellidos por espacios
+        val partesApellidos = student.apellidos.trim().split(" ")
 
-        val partes = student.apellidos.split(" ")
+        // El enunciado pide usar el "segundo apellido".
+        // Si solo tiene uno, usamos ese como fallback.
+        val segundoApellido = if (partesApellidos.size > 1) {
+            partesApellidos[1].lowercase()
+        } else {
+            partesApellidos[0].lowercase()
+        }
 
-        val segundoApellido = if (partes.size > 1) partes[1] else partes[0]
+        // 1. Primera letra del nombre en minúscula
+        val primeraLetraNombre = student.nombre.trim().first().lowercaseChar()
 
-        val primeraLetraNombre = student.nombre.first().lowercaseChar()
+        // 2. Segunda letra del segundo apellido en minúscula
+        // Si el apellido es muy corto (1 letra), usamos un string vacío
+        val segundaLetraSegundoApellido = if (segundoApellido.length > 1) {
+            segundoApellido[1].lowercaseChar()
+        } else {
+            ""
+        }
 
-        val segundaLetraSegundoApellido =
-            if (segundoApellido.length > 1)
-                segundoApellido[1].lowercaseChar()
-            else
-                ""
-
-        return "$primeraLetraNombre${segundoApellido.lowercase()}$segundaLetraSegundoApellido@iesrafaelalberti.es"
+        // 3. Construcción final: nombre + apellido completo + letra suelta + dominio
+        return "$primeraLetraNombre$segundoApellido$segundaLetraSegundoApellido@iesrafaelalberti.es"
     }
 }
